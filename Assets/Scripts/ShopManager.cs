@@ -1,0 +1,70 @@
+using System.Collections;
+using System.Collections.Generic;
+using System.Linq;
+
+using UnityEngine;
+
+public class ShopManager : MonoBehaviour {
+	[SerializeField] List<Customer> customerPrefabs = default;
+	[Space]
+	[SerializeField] float intervalBetweenCustomers = default;
+	[SerializeField] float currentMultiplier = default;
+	[Space]
+	[SerializeField] int maxInventoryCount = default;
+	[Space]
+	[SerializeField] Transform spawnPoint = default;
+	[SerializeField] Transform movePoint = default;
+	[SerializeField] SpriteRenderer bubble = default;
+
+	Customer CurrentCustomer { get; set; }
+	[SerializeField] List<Item> allItems;
+	List<Item> inventory;
+
+	float t = 0;
+
+	void Start() {
+		//allItems = Resources.FindObjectsOfTypeAll<Item>().ToList();
+
+		inventory = new List<Item>(maxInventoryCount);
+		for (int i = 0; i < maxInventoryCount; i++) {
+			AddRandomItemToInventory();
+		}
+	}
+
+	void AddRandomItemToInventory() {
+		var item = GetRandomItem();
+		allItems.Remove(item);
+		inventory.Add(item);
+		GetComponent<ShelvesManager>().AddItemToShelves(item);
+		// UI.Add(item);
+	}
+
+	Item GetRandomItem() => allItems[Random.Range(0, allItems.Count)];
+
+	void SpawnNewCustomer() {
+		var newCustomer = Instantiate(customerPrefabs[Random.Range(0, customerPrefabs.Count)]);
+		newCustomer.transform.position = spawnPoint.position;
+		newCustomer.wantedItem = inventory[Random.Range(0, inventory.Count)];
+		newCustomer.OnDespawn += () => {
+			inventory.Remove(newCustomer.wantedItem);
+			GetComponent<ShelvesManager>().RemoveItem(newCustomer.wantedItem);
+			AddRandomItemToInventory();
+			CurrentCustomer = null;
+		};
+		newCustomer.bubble = bubble;
+		bubble.transform.GetChild(0).GetComponent<SpriteRenderer>().sprite = newCustomer.wantedItem.sprite;
+
+		newCustomer.Initialize();
+		CurrentCustomer = newCustomer;
+	}
+
+
+	void Update() {
+		if (CurrentCustomer == null) {
+			if ((t += Time.deltaTime) >= intervalBetweenCustomers) {
+				SpawnNewCustomer();
+				t = 0;
+			}
+		}
+	}
+}
