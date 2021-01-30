@@ -5,8 +5,8 @@ using UnityEngine;
 
 public class Customer : MonoBehaviour {
 
-	[SerializeField] float speed = default;
 	[SerializeField] AudioSource source = default;
+
 	public Item wantedItem { get; set; }
 	public SpriteRenderer bubble { get; set; }
 

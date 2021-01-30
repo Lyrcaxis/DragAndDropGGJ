@@ -11,11 +11,12 @@ public class DragableItem : MonoBehaviour, IPointerEnterHandler, IPointerExitHan
 	public Item item { get; private set; }
 
 
-	public void ConfirmInitialization(Item item) {
+	public void ConfirmInitialization(Item item, int orderInLayer) {
 		OriginalPosition = transform.position;
 
 		spr = GetComponent<SpriteRenderer>();
 		spr.sprite = item.sprite;
+		spr.sortingOrder = orderInLayer;
 		col = gameObject.AddComponent<PolygonCollider2D>();
 
 		this.item = item;

@@ -12,7 +12,6 @@ public class ShopManager : MonoBehaviour {
 	[Space]
 	[SerializeField] int maxInventoryCount = default;
 	[Space]
-	[SerializeField] Transform spawnPoint = default;
 	[SerializeField] SpriteRenderer bubble = default;
 
 	Customer CurrentCustomer { get; set; }
@@ -46,7 +45,6 @@ public class ShopManager : MonoBehaviour {
 		int wrongAnswers = 0;
 
 		var newCustomer = Instantiate(customerPrefabs[Random.Range(0, customerPrefabs.Count)]);
-		newCustomer.transform.position = spawnPoint.position;
 		newCustomer.wantedItem = inventory[Random.Range(0, inventory.Count)];
 		newCustomer.OnDespawn += () => {
 			inventory.Remove(newCustomer.wantedItem);
