@@ -3,106 +3,114 @@ using System.Collections.Generic;
 
 using UnityEngine;
 
-public class Customer : MonoBehaviour
-{
-    public Item wantedItem { get; set; }
-    public System.Action OnDespawn { get; set; }
-    public SpriteRenderer bubble { get; set; }
-
+public class Customer : MonoBehaviour {
 
 	[SerializeField] float speed = default;
 	[SerializeField] AudioSource source = default;
+	public Item wantedItem { get; set; }
+	public SpriteRenderer bubble { get; set; }
+
+	public System.Action OnCorrectAnswer { get; set; }
+	public System.Action OnWrongAnswer { get; set; }
+
+
+	public System.Action OnDespawn { get; set; }
+
 
 
 
 	public void Initialize() {
-        var spr = GetComponent<SpriteRenderer>();
-        var bubbleChild = bubble.transform.GetChild(0).GetComponent<SpriteRenderer>();
-        bubble.color = bubbleChild.color = Color.clear;
+		var spr = GetComponent<SpriteRenderer>();
+		var bubbleChild = bubble.transform.GetChild(0).GetComponent<SpriteRenderer>();
+		bubble.color = bubbleChild.color = Color.clear;
 
-        StartCoroutine(InitializationAnim());
+		StartCoroutine(InitializationAnim());
 
 
 		IEnumerator InitializationAnim() {
-            float t = 0;
-            while (t < 1) {
-                t += Time.deltaTime;
-                spr.color = new Color(1, 1, 1, t);
-                yield return null;
+			float t = 0;
+			while (t < 1) {
+				t += Time.deltaTime;
+				spr.color = new Color(1, 1, 1, t);
+				yield return null;
 			}
 
-            yield return new WaitForSeconds(0.5f);
+			yield return new WaitForSeconds(0.5f);
 
-            t = 0;
-            while (t < 1) {
-                t += Time.deltaTime * 2f;
-                bubble.color = new Color(1, 1, 1, t);
-                bubbleChild.color = new Color(1, 1, 1, t);
-                yield return null;
-            }
+			t = 0;
+			while (t < 1) {
+				t += Time.deltaTime * 2f;
+				bubble.color = new Color(1, 1, 1, t);
+				bubbleChild.color = new Color(1, 1, 1, t);
+				yield return null;
+			}
 
-            yield return new WaitForSeconds(0.5f);
+			yield return new WaitForSeconds(0.5f);
 
-            //source.clip = wantedItem.clip;
-            //source.loop = true;
-            //source.Play();
-        }
-    }
+			//source.clip = wantedItem.clip;
+			//source.loop = true;
+			//source.Play();
+		}
+	}
 
-    public void OnDropItem(Item item) {
-        //bool t = ItemEvaluator.EvaluateItem(this, item);
+	public void OnDropItem(Item item) {
+		//bool t = ItemEvaluator.EvaluateItem(this, item);
 
-        if (item == wantedItem) { Leave(); }
-        else { Debug.Log("Wrong Item"); }
-    }
+		if (item == wantedItem) {
+			OnCorrectAnswer?.Invoke();
+		}
+		else {
+			OnWrongAnswer?.Invoke();
+		}
+	}
 
-    void Leave() {
-        OnDespawn?.Invoke();
-        //source.Stop();
+	public void Leave() {
+		OnDespawn?.Invoke();
+		//source.Stop();
 
-        var spr = GetComponent<SpriteRenderer>();
-        var bubbleChild = bubble.transform.GetChild(0).GetComponent<SpriteRenderer>();
-        StartCoroutine(LeaveAnim());
+		var spr = GetComponent<SpriteRenderer>();
+		var bubbleChild = bubble.transform.GetChild(0).GetComponent<SpriteRenderer>();
+		StartCoroutine(LeaveAnim());
 
-        IEnumerator LeaveAnim() {
-            float t = 0;
-            while (t < 1) {
-                t += Time.deltaTime * 4f;
-                bubble.color = new Color(1, 1, 1, 1 - t);
-                bubbleChild.color = new Color(1, 1, 1, 1 - t);
-                yield return null;
-            }
-            t = 0;
-            while (t < 1) {
-                t += 2 * Time.deltaTime;
-                spr.color = new Color(1, 1, 1, 1 - t);
-                yield return null;
-            }
+		IEnumerator LeaveAnim() {
+			float t = 0;
+			while (t < 1) {
+				t += Time.deltaTime * 4f;
+				bubble.color = new Color(1, 1, 1, 1 - t);
+				bubbleChild.color = new Color(1, 1, 1, 1 - t);
+				yield return null;
+			}
+			t = 0;
+			while (t < 1) {
+				t += 2 * Time.deltaTime;
+				spr.color = new Color(1, 1, 1, 1 - t);
+				yield return null;
+			}
 
-            Destroy(gameObject);
-        }
-    }
+			Destroy(gameObject);
+		}
+	}
 }
 
 public class ItemEvaluator : MonoBehaviour {
 	[SerializeField] AudioClip correctSound = default;
-    [SerializeField] AudioClip wrongSound = default;
+	[SerializeField] AudioClip wrongSound = default;
 
-    public int CorrectChoices, WrongChoices;
+	public int CorrectChoices, WrongChoices;
 
-    static ItemEvaluator instance;
+	static ItemEvaluator instance;
 
 
-    public static void EvaluateItem(Customer customer, Item givenItem) {
-        bool wasCorrect = givenItem == customer.wantedItem;
-        if (wasCorrect) {
-            AudioSource.PlayClipAtPoint(instance.correctSound, Vector3.zero);
-            instance.CorrectChoices++;
+	public static void EvaluateItem(Customer customer, Item givenItem) {
+		bool wasCorrect = givenItem == customer.wantedItem;
+		if (wasCorrect) {
+			AudioSource.PlayClipAtPoint(instance.correctSound, Vector3.zero);
+			instance.CorrectChoices++;
 		}
-        else {
-            AudioSource.PlayClipAtPoint(instance.wrongSound, Vector3.zero);
-            instance.WrongChoices++;
-        }
-    }
+		else {
+			AudioSource.PlayClipAtPoint(instance.wrongSound, Vector3.zero);
+			instance.WrongChoices++;
+		}
+	}
 
 }

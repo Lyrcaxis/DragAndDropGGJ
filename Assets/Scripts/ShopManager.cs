@@ -13,7 +13,6 @@ public class ShopManager : MonoBehaviour {
 	[SerializeField] int maxInventoryCount = default;
 	[Space]
 	[SerializeField] Transform spawnPoint = default;
-	[SerializeField] Transform movePoint = default;
 	[SerializeField] SpriteRenderer bubble = default;
 
 	Customer CurrentCustomer { get; set; }
@@ -42,6 +41,10 @@ public class ShopManager : MonoBehaviour {
 	Item GetRandomItem() => allItems[Random.Range(0, allItems.Count)];
 
 	void SpawnNewCustomer() {
+		float currentMulti = 10f;
+		float standardPayment = 1f;
+		int wrongAnswers = 0;
+
 		var newCustomer = Instantiate(customerPrefabs[Random.Range(0, customerPrefabs.Count)]);
 		newCustomer.transform.position = spawnPoint.position;
 		newCustomer.wantedItem = inventory[Random.Range(0, inventory.Count)];
@@ -51,6 +54,15 @@ public class ShopManager : MonoBehaviour {
 			AddRandomItemToInventory();
 			CurrentCustomer = null;
 		};
+		newCustomer.OnCorrectAnswer += () => {
+			UIManager.AddMoney((int) (currentMulti * standardPayment));
+			newCustomer.Leave();
+		};
+		newCustomer.OnWrongAnswer += () => {
+			currentMulti *= 0.8f;
+			if (++wrongAnswers == 3) { newCustomer.Leave(); }
+		};
+
 		newCustomer.bubble = bubble;
 		bubble.transform.GetChild(0).GetComponent<SpriteRenderer>().sprite = newCustomer.wantedItem.sprite;
 
