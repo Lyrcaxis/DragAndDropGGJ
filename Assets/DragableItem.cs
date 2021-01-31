@@ -4,6 +4,7 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 
 public class DragableItem : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, IDragHandler, IBeginDragHandler, IEndDragHandler {
+	public Color clr;
 	SpriteRenderer spr;
 
 	Vector3 OriginalPosition;
@@ -22,7 +23,7 @@ public class DragableItem : MonoBehaviour, IPointerEnterHandler, IPointerExitHan
 	}
 
 
-	void IPointerEnterHandler.OnPointerEnter(PointerEventData eventData) => spr.color = Color.green;
+	void IPointerEnterHandler.OnPointerEnter(PointerEventData eventData) => spr.color = clr;
 	void IPointerExitHandler.OnPointerExit(PointerEventData eventData) => spr.color = Color.white;
 
 	void IBeginDragHandler.OnBeginDrag(PointerEventData eventData) => spr.sortingOrder++;
