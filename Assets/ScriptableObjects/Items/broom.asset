@@ -13,4 +13,4 @@ MonoBehaviour:
   m_Name: broom
   m_EditorClassIdentifier: 
   sprite: {fileID: 21300000, guid: 52c81af52bd97b94ab8d00bc2ab1c958, type: 3}
-  clip: {fileID: 0}
+  clip: {fileID: 8300000, guid: c5b7b2dc317a84349ad72ae7d933ef47, type: 3}
