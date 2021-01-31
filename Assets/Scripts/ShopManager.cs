@@ -11,8 +11,6 @@ public class ShopManager : MonoBehaviour {
 	[SerializeField] float currentMultiplier = default;
 	[Space]
 	[SerializeField] int maxInventoryCount = default;
-	[Space]
-	[SerializeField] SpriteRenderer bubble = default;
 
 	Customer CurrentCustomer { get; set; }
 	[SerializeField] List<Item> allItems;
@@ -60,11 +58,8 @@ public class ShopManager : MonoBehaviour {
 			currentMulti *= 0.8f;
 			if (++wrongAnswers == 3) { newCustomer.Leave(); }
 		};
-
-		newCustomer.bubble = bubble;
-		bubble.transform.GetChild(0).GetComponent<SpriteRenderer>().sprite = newCustomer.wantedItem.sprite;
-
 		newCustomer.Initialize();
+
 		CurrentCustomer = newCustomer;
 	}
 

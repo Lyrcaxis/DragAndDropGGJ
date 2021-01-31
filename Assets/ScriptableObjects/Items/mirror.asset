@@ -13,4 +13,4 @@ MonoBehaviour:
   m_Name: mirror
   m_EditorClassIdentifier: 
   sprite: {fileID: 21300000, guid: 16ba69f8f78a86c47a79590f050c30db, type: 3}
-  clip: {fileID: 0}
+  clip: {fileID: 8300000, guid: 368762f35aa1e3e47bcaf85e1d9dd97e, type: 3}

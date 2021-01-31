@@ -8,7 +8,6 @@ public class Customer : MonoBehaviour {
 	[SerializeField] AudioSource source = default;
 
 	public Item wantedItem { get; set; }
-	public SpriteRenderer bubble { get; set; }
 
 	public System.Action OnCorrectAnswer { get; set; }
 	public System.Action OnWrongAnswer { get; set; }
@@ -17,12 +16,17 @@ public class Customer : MonoBehaviour {
 	public System.Action OnDespawn { get; set; }
 
 
+	SpriteRenderer bubble { get; set; }
+	SpriteRenderer note { get; set; }
 
 
 	public void Initialize() {
 		var spr = GetComponent<SpriteRenderer>();
-		var bubbleChild = bubble.transform.GetChild(0).GetComponent<SpriteRenderer>();
-		bubble.color = bubbleChild.color = Color.clear;
+		bubble = transform.GetChild(0).GetComponent<SpriteRenderer>();
+		note = bubble.transform.GetChild(0).GetComponent<SpriteRenderer>();
+		note.sprite = wantedItem.sprite;
+
+		bubble.color = note.color = Color.clear;
 
 		StartCoroutine(InitializationAnim());
 
@@ -41,15 +45,18 @@ public class Customer : MonoBehaviour {
 			while (t < 1) {
 				t += Time.deltaTime * 2f;
 				bubble.color = new Color(1, 1, 1, t);
-				bubbleChild.color = new Color(1, 1, 1, t);
+				note.color = new Color(1, 1, 1, t);
 				yield return null;
 			}
 
 			yield return new WaitForSeconds(0.5f);
 
-			//source.clip = wantedItem.clip;
-			//source.loop = true;
-			//source.Play();
+			if (wantedItem.clip != null) {
+				source = gameObject.AddComponent<AudioSource>();
+				source.clip = wantedItem.clip;
+				source.loop = true;
+				source.Play();
+			}
 		}
 	}
 
@@ -69,7 +76,6 @@ public class Customer : MonoBehaviour {
 		//source.Stop();
 
 		var spr = GetComponent<SpriteRenderer>();
-		var bubbleChild = bubble.transform.GetChild(0).GetComponent<SpriteRenderer>();
 		StartCoroutine(LeaveAnim());
 
 		IEnumerator LeaveAnim() {
@@ -77,7 +83,8 @@ public class Customer : MonoBehaviour {
 			while (t < 1) {
 				t += Time.deltaTime * 4f;
 				bubble.color = new Color(1, 1, 1, 1 - t);
-				bubbleChild.color = new Color(1, 1, 1, 1 - t);
+				note.color = new Color(1, 1, 1, 1 - t);
+				if (source) { source.volume = 1 - t; }
 				yield return null;
 			}
 			t = 0;

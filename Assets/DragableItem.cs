@@ -4,7 +4,6 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 
 public class DragableItem : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, IDragHandler, IBeginDragHandler, IEndDragHandler {
-	PolygonCollider2D col;
 	SpriteRenderer spr;
 
 	Vector3 OriginalPosition;
@@ -17,7 +16,7 @@ public class DragableItem : MonoBehaviour, IPointerEnterHandler, IPointerExitHan
 		spr = GetComponent<SpriteRenderer>();
 		spr.sprite = item.sprite;
 		spr.sortingOrder = orderInLayer;
-		col = gameObject.AddComponent<PolygonCollider2D>();
+		gameObject.AddComponent<PolygonCollider2D>();
 
 		this.item = item;
 	}
