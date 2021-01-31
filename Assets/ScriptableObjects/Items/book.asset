@@ -13,4 +13,4 @@ MonoBehaviour:
   m_Name: book
   m_EditorClassIdentifier: 
   sprite: {fileID: 21300000, guid: 4af9e2e90716ca14c8b868c66d9ec253, type: 3}
-  clip: {fileID: 0}
+  clip: {fileID: 8300000, guid: 38c0901b9b45443418682eb608d978be, type: 3}

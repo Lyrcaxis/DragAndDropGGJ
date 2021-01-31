@@ -51,9 +51,12 @@ public class Customer : MonoBehaviour {
 
 			yield return new WaitForSeconds(0.5f);
 
-			//source.clip = wantedItem.clip;
-			//source.loop = true;
-			//source.Play();
+			if (wantedItem.clip != null) {
+				source = gameObject.AddComponent<AudioSource>();
+				source.clip = wantedItem.clip;
+				source.loop = true;
+				source.Play();
+			}
 		}
 	}
 
@@ -81,6 +84,7 @@ public class Customer : MonoBehaviour {
 				t += Time.deltaTime * 4f;
 				bubble.color = new Color(1, 1, 1, 1 - t);
 				note.color = new Color(1, 1, 1, 1 - t);
+				if (source) { source.volume = 1 - t; }
 				yield return null;
 			}
 			t = 0;

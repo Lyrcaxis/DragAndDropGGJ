@@ -13,4 +13,4 @@ MonoBehaviour:
   m_Name: Dagger
   m_EditorClassIdentifier: 
   sprite: {fileID: 21300000, guid: f80cb1b93b7c2374db52df7023dc1a84, type: 3}
-  clip: {fileID: 0}
+  clip: {fileID: 8300000, guid: 466fa972d2863e548a2f89f4d6137d14, type: 3}
