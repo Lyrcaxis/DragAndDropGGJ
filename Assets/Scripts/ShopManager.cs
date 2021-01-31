@@ -68,8 +68,12 @@ public class ShopManager : MonoBehaviour {
 		int wrongAnswers = 0;
 
 		var validItems = inventory.Where(x => x.clip != null).ToList();
-		if (validItems.Count == 0) {
-			Debug.Log("YOU WIN");
+		if (validItems.Count != 0) {
+			Camera.main.GetComponent<Animator>().Play("Camera Win");
+			var UIC = GameObject.Find("UI Canvas");
+			UIC.transform.Find("Buttons").gameObject.SetActive(false);
+			UIC.transform.Find("Credits").gameObject.SetActive(false);
+			UIC.transform.Find("WinText").gameObject.SetActive(true);
 			return;
 		}
 
