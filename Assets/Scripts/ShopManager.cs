@@ -14,12 +14,17 @@ public class ShopManager : MonoBehaviour {
 
 	[SerializeField] AudioSource doorSrc = default;
 	[SerializeField] GameObject door = default;
-
+	[SerializeField] AudioClip correctClip = default;
+	[SerializeField] AudioClip wrongClip = default;
 	Customer CurrentCustomer { get; set; }
 	[SerializeField] List<Item> allItems;
 	List<Item> inventory;
 
 	float t = 0;
+
+	int totalCorrectAnswers;
+
+	public bool canSpawn = true;
 
 	void Start() {
 		inventory = new List<Item>(maxInventoryCount);
@@ -30,6 +35,8 @@ public class ShopManager : MonoBehaviour {
 	}
 
 	void Update() {
+		if (!canSpawn) { return; }
+
 		if (CurrentCustomer == null) {
 			if ((t += Time.deltaTime) >= intervalBetweenCustomers) {
 				SpawnNewCustomer();
@@ -39,10 +46,18 @@ public class ShopManager : MonoBehaviour {
 	}
 
 	void AddRandomItemToInventory() {
+		if (allItems.Count == 0) { return; }
+
 		var item = GetRandomItem();
-		allItems.Remove(item);
-		inventory.Add(item);
-		GetComponent<ShelvesManager>().AddItemToShelves(item);
+		do {
+			allItems.Remove(item);
+			inventory.Add(item);
+			GetComponent<ShelvesManager>().AddItemToShelves(item);
+
+			if (allItems.Count == 0) { return; }
+			item = GetRandomItem();
+		} 
+		while (item.clip == null);
 
 		Item GetRandomItem() => allItems[Random.Range(0, allItems.Count)];
 	}
@@ -52,8 +67,16 @@ public class ShopManager : MonoBehaviour {
 		float standardPayment = 1f;
 		int wrongAnswers = 0;
 
+		var validItems = inventory.Where(x => x.clip != null).ToList();
+		if (validItems.Count == 0) {
+			Debug.Log("YOU WIN");
+			return;
+		}
+
+
+
 		var newCustomer = Instantiate(customerPrefabs[Random.Range(0, customerPrefabs.Count)]);
-		newCustomer.wantedItem = inventory[Random.Range(0, inventory.Count)];
+		newCustomer.wantedItem = validItems[Random.Range(0, validItems.Count)];
 		newCustomer.OnDespawn += () => {
 			inventory.Remove(newCustomer.wantedItem);
 			GetComponent<ShelvesManager>().RemoveItem(newCustomer.wantedItem);
@@ -62,10 +85,12 @@ public class ShopManager : MonoBehaviour {
 		};
 		newCustomer.OnCorrectAnswer += () => {
 			UIManager.AddMoney((int) (currentMulti * standardPayment));
+			AudioSource.PlayClipAtPoint(correctClip, Vector3.zero);
 			newCustomer.Leave();
 		};
 		newCustomer.OnWrongAnswer += () => {
 			currentMulti *= 0.8f;
+			AudioSource.PlayClipAtPoint(wrongClip, Vector3.zero);
 			if (++wrongAnswers == 3) { newCustomer.Leave(); }
 		};
 		newCustomer.Initialize();

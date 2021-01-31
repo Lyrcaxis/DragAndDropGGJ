@@ -24,7 +24,7 @@ public class Customer : MonoBehaviour {
 		var spr = GetComponent<SpriteRenderer>();
 		bubble = transform.GetChild(0).GetComponent<SpriteRenderer>();
 		note = bubble.transform.GetChild(0).GetComponent<SpriteRenderer>();
-		note.sprite = wantedItem.sprite;
+		//note.sprite = wantedItem.sprite;
 
 		bubble.color = note.color = Color.clear;
 

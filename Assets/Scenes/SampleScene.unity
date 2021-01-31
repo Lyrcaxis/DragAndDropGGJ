@@ -11675,6 +11675,8 @@ MonoBehaviour:
   maxInventoryCount: 10
   doorSrc: {fileID: 949790700}
   door: {fileID: 416884880}
+  correctClip: {fileID: 8300000, guid: cdf6380c68a2d0d48afc60cb52f98152, type: 3}
+  wrongClip: {fileID: 8300000, guid: f96903bc0fd83d241af54985c19bfbb6, type: 3}
   allItems:
   - {fileID: 11400000, guid: f39e503d39d17094a84de78532684023, type: 2}
   - {fileID: 11400000, guid: 50ad93bd53766554b97a89fd7a351b5d, type: 2}
@@ -11701,6 +11703,7 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 80f8097e9a814494f84067aff15f525e, type: 2}
   - {fileID: 11400000, guid: 283603f5ace0ced4e82caea01ff2bf51, type: 2}
   - {fileID: 11400000, guid: f9161ec45ae80744f9650640122b9c49, type: 2}
+  canSpawn: 0
 --- !u!4 &949790698
 Transform:
   m_ObjectHideFlags: 0
@@ -11743,7 +11746,7 @@ AudioSource:
   OutputAudioMixerGroup: {fileID: 0}
   m_audioClip: {fileID: 8300000, guid: 6566b8911eefa7e41a8ff035c492e3cc, type: 3}
   m_PlayOnAwake: 0
-  m_Volume: 1
+  m_Volume: 0.25
   m_Pitch: 1
   Loop: 0
   Mute: 0
@@ -15230,7 +15233,6 @@ ParticleSystemRenderer:
   m_RendererPriority: 0
   m_Materials:
   - {fileID: 10308, guid: 0000000000000000f000000000000000, type: 0}
-  - {fileID: 0}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
