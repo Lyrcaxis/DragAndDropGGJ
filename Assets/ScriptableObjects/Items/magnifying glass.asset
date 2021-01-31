@@ -13,4 +13,4 @@ MonoBehaviour:
   m_Name: magnifying glass
   m_EditorClassIdentifier: 
   sprite: {fileID: 21300000, guid: e3fd8a08006fbfb4ca64a4ce1a3de1c3, type: 3}
-  clip: {fileID: 0}
+  clip: {fileID: 8300000, guid: d07d4912c75e85f43bf56247563dbf61, type: 3}
