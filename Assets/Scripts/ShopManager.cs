@@ -6,12 +6,9 @@ using UnityEngine;
 
 public class ShopManager : MonoBehaviour {
 	[SerializeField] List<Customer> customerPrefabs = default;
-	[Space]
 	[SerializeField] float intervalBetweenCustomers = default;
-	[SerializeField] float currentMultiplier = default;
-	[Space]
 	[SerializeField] int maxInventoryCount = default;
-
+	[Space]
 	[SerializeField] AudioSource doorSrc = default;
 	[SerializeField] GameObject door = default;
 	[SerializeField] AudioClip correctClip = default;
@@ -68,12 +65,13 @@ public class ShopManager : MonoBehaviour {
 		int wrongAnswers = 0;
 
 		var validItems = inventory.Where(x => x.clip != null).ToList();
-		if (validItems.Count != 0) {
+		if (validItems.Count == 0) {
 			Camera.main.GetComponent<Animator>().Play("Camera Win");
 			var UIC = GameObject.Find("UI Canvas");
 			UIC.transform.Find("Buttons").gameObject.SetActive(false);
 			UIC.transform.Find("Credits").gameObject.SetActive(false);
 			UIC.transform.Find("WinText").gameObject.SetActive(true);
+			var startScript = FindObjectOfType<StartGame>();
 			return;
 		}
 
