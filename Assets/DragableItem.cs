@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+
 using UnityEngine;
 using UnityEngine.EventSystems;
 
@@ -11,22 +12,41 @@ public class DragableItem : MonoBehaviour, IPointerEnterHandler, IPointerExitHan
 	public Item item { get; private set; }
 
 
+	int initialSortingOrder;
+	int initialLayer;
+
+	void Awake() {
+		spr = GetComponent<SpriteRenderer>();
+		initialLayer = spr.sortingLayerID;
+		initialSortingOrder = spr.sortingOrder;
+	}
+
 	public void ConfirmInitialization(Item item, int orderInLayer) {
 		OriginalPosition = transform.position;
 
-		spr = GetComponent<SpriteRenderer>();
 		spr.sprite = item.sprite;
 		spr.sortingOrder = orderInLayer;
 		gameObject.AddComponent<PolygonCollider2D>();
 
 		this.item = item;
+		StartCoroutine(FadeInAlpha());
+
+
+		IEnumerator FadeInAlpha() {
+			float t = 0;
+			while (t < 1) {
+				t += Time.deltaTime;
+				spr.color = new Color(1, 1, 1, t);
+				yield return null;
+			}
+		}
 	}
 
 
 	void IPointerEnterHandler.OnPointerEnter(PointerEventData eventData) => spr.color = clr;
 	void IPointerExitHandler.OnPointerExit(PointerEventData eventData) => spr.color = Color.white;
 
-	void IBeginDragHandler.OnBeginDrag(PointerEventData eventData) => spr.sortingOrder++;
+	void IBeginDragHandler.OnBeginDrag(PointerEventData eventData) => spr.sortingLayerName = "Items";
 	void IDragHandler.OnDrag(PointerEventData eventData) => transform.position = GetMousePos();
 	void IEndDragHandler.OnEndDrag(PointerEventData eventData) {
 		var hitCol = Physics2D.OverlapBox(GetMousePos(), Vector2.one * 0.25f, 0, (1 << 10));
@@ -45,7 +65,7 @@ public class DragableItem : MonoBehaviour, IPointerEnterHandler, IPointerExitHan
 			yield return null;
 		}
 
-		spr.sortingOrder--;
+		spr.sortingLayerID = initialLayer;
 	}
 
 	static Vector3 GetMousePos() {

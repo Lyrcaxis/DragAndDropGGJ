@@ -78,14 +78,14 @@ public class ShopManager : MonoBehaviour {
 		var newCustomer = Instantiate(customerPrefabs[Random.Range(0, customerPrefabs.Count)]);
 		newCustomer.wantedItem = validItems[Random.Range(0, validItems.Count)];
 		newCustomer.OnDespawn += () => {
-			inventory.Remove(newCustomer.wantedItem);
-			GetComponent<ShelvesManager>().RemoveItem(newCustomer.wantedItem);
-			AddRandomItemToInventory();
 			CurrentCustomer = null;
 		};
 		newCustomer.OnCorrectAnswer += () => {
 			UIManager.AddMoney((int) (currentMulti * standardPayment));
 			AudioSource.PlayClipAtPoint(correctClip, Vector3.zero);
+			inventory.Remove(newCustomer.wantedItem);
+			GetComponent<ShelvesManager>().RemoveItem(newCustomer.wantedItem);
+			AddRandomItemToInventory();
 			newCustomer.Leave();
 		};
 		newCustomer.OnWrongAnswer += () => {
