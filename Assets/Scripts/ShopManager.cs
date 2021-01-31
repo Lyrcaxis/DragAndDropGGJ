@@ -12,6 +12,9 @@ public class ShopManager : MonoBehaviour {
 	[Space]
 	[SerializeField] int maxInventoryCount = default;
 
+	[SerializeField] AudioSource doorSrc = default;
+	[SerializeField] GameObject door = default;
+
 	Customer CurrentCustomer { get; set; }
 	[SerializeField] List<Item> allItems;
 	List<Item> inventory;
@@ -19,11 +22,19 @@ public class ShopManager : MonoBehaviour {
 	float t = 0;
 
 	void Start() {
-		//allItems = Resources.FindObjectsOfTypeAll<Item>().ToList();
-
 		inventory = new List<Item>(maxInventoryCount);
+
 		for (int i = 0; i < maxInventoryCount; i++) {
 			AddRandomItemToInventory();
+		}
+	}
+
+	void Update() {
+		if (CurrentCustomer == null) {
+			if ((t += Time.deltaTime) >= intervalBetweenCustomers) {
+				SpawnNewCustomer();
+				t = 0;
+			}
 		}
 	}
 
@@ -32,10 +43,9 @@ public class ShopManager : MonoBehaviour {
 		allItems.Remove(item);
 		inventory.Add(item);
 		GetComponent<ShelvesManager>().AddItemToShelves(item);
-		// UI.Add(item);
-	}
 
-	Item GetRandomItem() => allItems[Random.Range(0, allItems.Count)];
+		Item GetRandomItem() => allItems[Random.Range(0, allItems.Count)];
+	}
 
 	void SpawnNewCustomer() {
 		float currentMulti = 10f;
@@ -61,15 +71,15 @@ public class ShopManager : MonoBehaviour {
 		newCustomer.Initialize();
 
 		CurrentCustomer = newCustomer;
+
+		StartCoroutine(OnCustomerWalkAnim());
 	}
 
-
-	void Update() {
-		if (CurrentCustomer == null) {
-			if ((t += Time.deltaTime) >= intervalBetweenCustomers) {
-				SpawnNewCustomer();
-				t = 0;
-			}
-		}
+	IEnumerator OnCustomerWalkAnim() {
+		doorSrc.Play();
+		door.gameObject.SetActive(true);
+		yield return new WaitForSeconds(0.5f);
+		door.gameObject.SetActive(false);
 	}
+
 }
